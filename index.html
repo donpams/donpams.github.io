@@ -350,13 +350,21 @@ details.more p { font-size: 15px; color: color-mix(in srgb, var(--ink) 85%, tran
         <article class="project wide">
           <div class="pmeta"><span class="data tag">ML / Autonomy</span><span class="data">2026</span></div>
           <h3>Safe Autopilot</h3>
-          <p class="prole">Solo builder</p>
-          <p>A learned flight controller with a safety monitor that catches it when it fails, and the five real bugs I found building it.</p>
+          <p class="prole">A learned flight controller with a runtime safety monitor</p>
+          <p>A neural-network pilot flies a simulated Cessna 172, and a safety monitor hands control to a simple, known-safe PID autopilot the moment the aircraft leaves a safe envelope.</p>
+          <div class="pstatus"><span class="dot"></span><span>With the monitor watching, <strong>0 of 180</strong> deliberately broken flights crashed.</span></div>
           <details class="more"><summary>Details</summary>
-            <p>Along the way I found and fixed five real bugs, including one where the "safe" fallback controller quietly mis-flew itself when engaged mid-flight, and stress-tested the whole system against turbulence, sensor noise and bad starting conditions.</p>
-            <p>Result: zero crashes with the monitor engaged, across every condition I tested.</p>
+            <p>I built the same safety pattern twice. In v1 the learned controller imitates the PID. In v2 it is trained with reinforcement learning (PPO). The monitor and fallback are identical in both, so I could compare the two learned pilots fairly.</p>
+            <p class="eyebrow" style="margin:14px 0 8px">Results</p>
+            <ul class="points">
+              <li>The RL pilot beat the imitation model in <strong>all five test conditions</strong> and beat the PID in every disturbed one. The PID is still the most precise in calm air.</li>
+              <li>I deliberately broke the learned controller's outputs with a stuck elevator offset and a stuck aileron. Flying alone, every learned controller crashed in the stuck-aileron test. With the monitor watching, <strong>0 of 180 flights crashed</strong>.</li>
+              <li>Strong turbulence (severity 3+) crashes every controller, including the fallback, because none of them control engine power. I documented this as a known limit rather than hiding it.</li>
+            </ul>
+            <p class="eyebrow" style="margin:14px 0 8px">What went wrong, and what I learned</p>
+            <p>My first RL reward taught the policy to crash on purpose, because ending the flight early scored better than continuing. I only caught it by reading the full training curve. I also found that my results changed between simulator versions, so I pinned the version and re-ran everything.</p>
           </details>
-          <ul class="chips sm"><li>Python</li><li>PyTorch</li><li>JSBSim</li><li>Gymnasium</li><li>Imitation learning</li><li>Runtime assurance</li></ul>
+          <ul class="chips sm"><li>Python</li><li>JSBSim</li><li>Gymnasium</li><li>PyTorch</li><li>Stable-Baselines3</li><li>PPO</li><li>Runtime assurance</li></ul>
           <div class="plinks"><a class="plink" href="https://donpams.github.io/safe-autopilot/" target="_blank" rel="noreferrer">Live site ↗</a><a class="plink ghost" href="https://github.com/donpams/safe-autopilot" target="_blank" rel="noreferrer">Code on GitHub ↗</a></div>
         </article>
         <article class="project wide">
